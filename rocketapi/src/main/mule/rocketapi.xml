@@ -1,5 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+	<http:listener-config name="HTTP_Listener_config"
+		doc:name="HTTP Listener config"
+		doc:id="d587cb1f-7a1e-4c48-8dcf-b850c4d4a04c">
+		<http:listener-connection host="0.0.0.0"
+			port="8081" />
+	</http:listener-config>
+	<vm:config name="VM_Config" doc:name="VM Config"
+		doc:id="cafdcd22-432a-4cd5-b47e-45457286caeb">
+		<vm:queues>
+			<vm:queue queueName="fuel" />
+		</vm:queues>
+	</vm:config>
+	<flow name="rocketapiFlow"
+		doc:id="83ba8729-1c46-4c0c-a7b9-aa0f6cb9a229">
+		<http:listener doc:name="Listener"
+			doc:id="ef95578e-5490-4d8d-96da-84602dfa6289"
+			config-ref="HTTP_Listener_config" path="/rocket/launch" />
+		<vm:publish-consume queueName="fuel"
+			doc:name="Publish consume"
+			doc:id="35c54982-09b5-43b1-9636-aa02eaef474b" config-ref="VM_Config"
+			sendCorrelationId="ALWAYS" />
+	</flow>
+	<flow name="regularFlow"
+		doc:id="73290bd3-d1ad-4112-922e-9630ee0274cd">
+		<vm:listener queueName="fuel" doc:name="Listener"
+			doc:id="008d1d78-678b-4878-b279-60e7b0bb2189" config-ref="VM_Config"
+			outputEncoding="US-ASCII" />
+		<logger level="INFO" doc:name="Logger"
+			doc:id="ce1df378-7bfa-46c4-922d-cd4b6797dffa"
+			message='#["rocket launched"]' />
+	</flow>
+
+</mule>
