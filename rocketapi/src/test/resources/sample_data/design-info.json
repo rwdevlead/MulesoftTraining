@@ -1,0 +1,16 @@
+{
+  "sampleData": {
+    "92ee94f9-75b2-4cf0-b8fa-55e39dfc8793": {
+      "payload": "sample_data/defaultstringtype.dwl"
+    },
+    "d5de39f6-9a18-465d-ba29-c1d216a28618": {
+      "payload": "sample_data/list_java.dwl"
+    },
+    "d8aa8022-9948-4201-9e9b-085a8ba1af3d": {
+      "payload": "sample_data/name.xml"
+    },
+    "6fcc9022-b969-4a47-a7ea-06f5187290fe": {
+      "payload": "sample_data/name_1.xml"
+    }
+  }
+}
