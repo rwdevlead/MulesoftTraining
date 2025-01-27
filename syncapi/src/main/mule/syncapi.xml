@@ -7,7 +7,7 @@
 	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
 	<file:config name="File_Config" doc:name="File Config" doc:id="2f9e4046-71dd-47c4-aa34-cf2bcf26a146" >
-		<file:connection workingDir="/Users/ka8kgj/Documents/Source/muleTraining/fileprocessing" />
+		<file:connection workingDir="/Users/ka8kgj/Documents/Source/muleTraining/fileprocessing/leave_atmosphere" />
 	</file:config>
 	<flow name="syncapiFlow"
 		doc:id="4aa1ad70-997c-4360-934d-a703859d62a1">
@@ -17,6 +17,8 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
 				<fixed-frequency />
 			</scheduling-strategy>
 		</file:listener>
+		<file:copy doc:name="Copy" doc:id="786dc156-d1ee-432d-ad9e-b3071968436f" config-ref="File_Config" sourcePath="/Users/ka8kgj/Documents/Source/muleTraining/fileprocessing/leave_atmosphere" targetPath="/Users/ka8kgj/Documents/Source/muleTraining/fileprocessing/into_space" overwrite="true"/>
+		<file:delete doc:name="Delete" doc:id="1fea6af2-36b8-4168-a99c-fef02ed73779" config-ref="File_Config" path="/Users/ka8kgj/Documents/Source/muleTraining/fileprocessing/leave_atmosphere/rocket.txt"/>
 		<logger level="INFO" doc:name="Logger"
 			doc:id="d2557cbe-a8eb-486c-8724-077d103fd209" message='#["I have a file"]'/>
 	</flow>
