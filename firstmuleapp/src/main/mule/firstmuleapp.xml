@@ -7,9 +7,25 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="1dc648cd-ef9d-4bd9-8620-67112d82077e" >
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
-	<flow name="SchedularFlow" doc:id="2c4f2d21-dbcc-43a1-bc61-3d47b434786f" >
-		<http:listener doc:name="HTTP Listener" doc:id="cd2e2da4-25fc-4c27-b49b-d94930f7986b" config-ref="HTTP_Listener_config" path="/log"/>
-		<set-payload value="Hello World" doc:name="Set Payload" doc:id="2df83e63-f61c-4d73-a26d-534209e94bdc" />
-		<logger level="INFO" doc:name="Log Message" doc:id="195d6e8b-29ba-41e5-a2eb-61e1ee6d10d7"/>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="baa9fac1-ddeb-488d-8027-2c140631dfc6" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
+	<flow name="WelcomeFlow" doc:id="2c4f2d21-dbcc-43a1-bc61-3d47b434786f" >
+		<http:listener doc:name="HTTP Listener" doc:id="cd2e2da4-25fc-4c27-b49b-d94930f7986b" config-ref="HTTP_Listener_config" path="/welcome"/>
+		<flow-ref doc:name="Flow Reference" doc:id="dc41c87a-1986-4b89-a71a-1c535747a490" name="PrivateFlow"/>
+		<set-payload value="#[vars.fullName]" doc:name="Set Payload" doc:id="1aff032e-3a39-43d1-a0e4-fce28c86d172" />
+	</flow>
+	<sub-flow name="FullNameCalculator" doc:id="dda0b35d-6b0e-4959-8844-cc14227408f2" >
+		<set-variable value="#[upper(attributes.queryParams.name) ++ ' ' ++ upper(attributes.queryParams.surname)]" doc:name="Set Variable" doc:id="770c52fd-0ad0-4179-ba30-04a70f6d95bc" variableName="fullName"/>
+		<logger level="INFO" doc:name="Logger" doc:id="dde49eba-c7af-4adf-a246-031e9faf5c0d" message="#[vars.fullName]"/>
+	</sub-flow>
+	<flow name="PrivateFlow" doc:id="55ea6ad9-c964-4574-be62-ac93f1a5e656" >
+		<set-variable value="#[upper(attributes.queryParams.name) ++ ' ' ++ upper(attributes.queryParams.surname)]" doc:name="Set FullName" doc:id="03b9219a-0dd9-4d3e-8659-81ee2f466ba7" variableName="fullName"/>
+		<logger level="INFO" doc:name="Logger FullName" doc:id="f33a4405-77c0-49ce-a0dd-c2dcac4e0beb" message="#[vars.fullName]"/>
+	</flow>
+	<flow name="GoodByeFlow" doc:id="53a3c5ae-7f13-4ebb-aa9a-7a1acd045821" >
+		<http:listener doc:name="Listener" doc:id="5ee09100-d306-4266-bdc5-27650f3c0b6e" config-ref="HTTP_Listener_config" path="/goodbye"/>
+		<flow-ref doc:name="Flow Reference" doc:id="d381aa09-9092-4264-a653-40db8e0a0495" name="PrivateFlow"/>
+		<set-payload value="#[vars.fullName]" doc:name="Set Payload" doc:id="33b582dc-b127-46ec-ba9c-633ed505e8ab" />
 	</flow>
 </mule>

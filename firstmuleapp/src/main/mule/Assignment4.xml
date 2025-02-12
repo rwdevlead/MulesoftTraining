@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="Assignment4Flow" doc:id="2d8b0064-85ff-4638-afad-8bba0e7d504b" >
+		<http:listener doc:name="Listener" doc:id="2fb3662c-3fbb-45cf-92aa-3995f4054b39" config-ref="HTTP_Listener_config" path="/assign4"/>
+		<flow-ref doc:name="Flow Reference" doc:id="cd7bf01e-53e4-4db3-8748-5c2ca0b79f06" name="counter"/>
+		<set-payload value='#[%dw 2.0 output application/json &#10;---&#10;{&#10;	"key": message.payload.key,&#10;	"Length": vars.length&#10;}]' doc:name="Set Payload" doc:id="fc4dddcd-98fe-4f32-b491-f1ffa389c023" mimeType="application/json"/>
+		<logger level="INFO" doc:name="Logger" doc:id="bdb56db7-6904-497a-96da-dacc2a945f0f" />
+	</flow>
+	<flow name="counter" doc:id="71a2e490-71e7-49e3-aa04-9c4e4845f467" >
+		<set-variable value="#[sizeOf(message.payload.key)]" doc:name="Set Variable" doc:id="150d860f-7bc2-4ad8-95e6-7135de9b16ef" variableName="length"/>
+	</flow>
+</mule>
