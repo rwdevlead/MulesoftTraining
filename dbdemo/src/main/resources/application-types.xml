@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="student_op" format="json">
+      <types:shape format="weave" example="examples/student.json"><![CDATA[%dw 2.0
+
+type student_op = Array<{|  first_name: String,   last_name: String,   age: Number {"typeId": "int"}|}> {"example": "[{\\\"first_name\\\":\\\"Mahesh\\\",\\\"last_name\\\":\\\"Jadhav\\\",\\\"age\\\":16}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#560196b0-af9d-4d26-8fc6-ab81b2a26745">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="student_op"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#e907c801-acb4-4429-9239-2105da8c4ec5">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="student_op"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
