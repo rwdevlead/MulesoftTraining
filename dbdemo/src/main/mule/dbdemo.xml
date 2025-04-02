@@ -15,21 +15,28 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<flow name="dbdemoFlow" doc:id="560196b0-af9d-4d26-8fc6-ab81b2a26745" >
 		<http:listener doc:name="Listener" doc:id="cb342471-6986-4dd5-91a7-0a34304998a4" config-ref="HTTP_Listener_config" path="/read"/>
 		<db:select doc:name="ReadTable" doc:id="268a35c8-2d00-4aec-95c8-a8e43c57bc87" config-ref="Database_Config">
-			<db:sql ><![CDATA[select * from student]]></db:sql>
+			<db:sql ><![CDATA[select * from student where first_name =:incoming_name ]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'incoming_name' : attributes.queryParams.name }]]]></db:input-parameters>
 		</db:select>
 		<ee:transform doc:name="Transform Message" doc:id="e907c801-acb4-4429-9239-2105da8c4ec5" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
-import capitalize from dw::core::Strings
 output application/json
-
 ---
 payload map ( payload01 , indexOfPayload01 ) -> {
-	first_name: capitalize ( payload01.first_name default "" ),
+	first_name: payload01.first_name default "",
 	last_name: payload01.last_name default "",
 	age: payload01.age default 0
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+	</flow>
+	<flow name="dbdemoFlow1" doc:id="93b0a8ce-c704-49ff-a6b4-b1087c7a3a10" >
+		<http:listener doc:name="Listener" doc:id="a34832f9-9b12-4543-8c0a-c68bd5bac30a" config-ref="HTTP_Listener_config" path="/student" allowedMethods="POST" outputMimeType="application/json"/>
+		<db:insert doc:name="Insert" doc:id="5a52430b-6c86-46b7-860c-6e9d8fd39c4c" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO student (first_name,last_name,age) VALUES (:first_name,:last_name,:age);]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{ first_name: payload.name, last_name: payload.surname, age: payload.age }]]]></db:input-parameters>
+		</db:insert>
+		<set-payload value="record created" doc:name="Set Payload" doc:id="ae3a23b0-b201-4455-b490-28012847929a" />
 	</flow>
 </mule>
